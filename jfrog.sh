@@ -26,7 +26,6 @@ fi
 echo "            -> Done"
 
 # Create user
-echo "*****Creating Artifactory user"
 sudo useradd -r -m -U -d /opt/artifactory -s /bin/false artifactory 2>/dev/null
 
 
@@ -34,21 +33,21 @@ sudo useradd -r -m -U -d /opt/artifactory -s /bin/false artifactory 2>/dev/null
 cd /opt
 sudo rm -rf jfrog* artifactory*
 
-sudo wget https://releases.jfrog.io/artifactory/bintray-artifactory/org/artifactory/oss/jfrog-artifactory-oss/7.77.3/jfrog-artifactory-oss-7.77.3-linux.tar.gz
+sudo wget https://releases.jfrog.io/artifactory/bintray-artifactory/org/artifactory/oss/jfrog-artifactory-oss/7.77.3/jfrog-artifactory-oss-7.77.3-linux.tar.gz > /dev/null 2>&1
 
-sudo tar -xvzf jfrog-artifactory-oss-7.77.3-linux.tar.gz > /dev/null
+sudo tar -xvzf jfrog-artifactory-oss-7.77.3-linux.tar.gz > /dev/null 2>&1
 
-sudo mv artifactory-oss-7.77.3 /opt/artifactory
-sudo rm -rf jfrog-artifactory-oss-7.77.3-linux.tar.gz
+sudo mv artifactory-oss-7.77.3 /opt/artifactory > /dev/null 2>&1
+sudo rm -rf jfrog-artifactory-oss-7.77.3-linux.tar.gz > /dev/null 2>&1
 
-sudo chown -R artifactory:artifactory /opt/artifactory
+sudo chown -R artifactory:artifactory /opt/artifactory > /dev/null 2>&1
 
 # Copy service file
 sudo cp $(path)/artifactory.service /etc/systemd/system/artifactory.service
 sudo systemctl daemon-reload > /dev/null 2>&1
 
 # Start service
-sudo systemctl start artifactory
+sudo systemctl start artifactory > /dev/null 2>&1
 
 # Check status
 sudo systemctl is-active --quiet artifactory
