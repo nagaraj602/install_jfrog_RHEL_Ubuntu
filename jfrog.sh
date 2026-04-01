@@ -1,5 +1,7 @@
 #!/bin/bash
 
+path=$(pwd)
+
 distro=$(cat /etc/os-release | grep "^ID=" | cut -d "=" -f2 | sed 's/"//g')
 
 echo "Installing JFrog Artifactory on $distro.."
@@ -26,34 +28,26 @@ echo "            -> Done"
 # Create user
 echo "*****Creating Artifactory user"
 sudo useradd -r -m -U -d /opt/artifactory -s /bin/false artifactory 2>/dev/null
-echo "            -> Done"
+
 
 # Download latest Artifactory (using current modern OSS version)
-echo "*****Downloading JFrog Artifactory"
-
 cd /opt
 sudo rm -rf jfrog* artifactory*
 
-sudo wget -q https://releases.jfrog.io/artifactory/artifactory-oss/jfrog-artifactory-oss-latest.zip
-sudo unzip -q jfrog-artifactory-oss-latest.zip -d /opt/artifactory
-sudo rm -rf jfrog-artifactory-oss-latest.zip
+sudo wget https://releases.jfrog.io/artifactory/bintray-artifactory/org/artifactory/oss/jfrog-artifactory-oss/7.77.3/jfrog-artifactory-oss-7.77.3-linux.tar.gz
 
-# Get extracted folder name
-ARTI_DIR=$(ls /opt/artifactory | grep artifactory)
+sudo tar -xvzf jfrog-artifactory-oss-7.77.3-linux.tar.gz > /dev/null
 
-# Ownership
+sudo mv artifactory-oss-7.77.3 /opt/artifactory
+sudo rm -rf jfrog-artifactory-oss-7.77.3-linux.tar.gz
+
 sudo chown -R artifactory:artifactory /opt/artifactory
 
-echo "            -> Done"
-
 # Copy service file
-echo "*****Configuring Artifactory Service"
-sudo cp artifactory.service /etc/systemd/system/artifactory.service
+sudo cp $(path)/artifactory.service /etc/systemd/system/artifactory.service
 sudo systemctl daemon-reload > /dev/null 2>&1
-echo "            -> Done"
 
 # Start service
-echo "*****Starting Artifactory Service"
 sudo systemctl start artifactory
 
 # Check status
