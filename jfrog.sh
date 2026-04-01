@@ -35,7 +35,7 @@ sudo rm -rf jfrog* artifactory*
 
 sudo wget https://releases.jfrog.io/artifactory/bintray-artifactory/org/artifactory/oss/jfrog-artifactory-oss/7.77.3/jfrog-artifactory-oss-7.77.3-linux.tar.gz > /dev/null 2>&1
 
-sudo tar -xvzf jfrog-artifactory-oss-7.77.3-linux.tar.gz > /dev/null 2>&1
+sudo tar -xvzf jfrog-artifactory-oss-7.77.3-linux.tar.gz
 
 sudo mv artifactory-oss-7.77.3 /opt/artifactory > /dev/null 2>&1
 sudo rm -rf jfrog-artifactory-oss-7.77.3-linux.tar.gz > /dev/null 2>&1
@@ -44,10 +44,9 @@ sudo chown -R artifactory:artifactory /opt/artifactory > /dev/null 2>&1
 
 # Copy service file
 sudo cp $path/artifactory.service /etc/systemd/system/artifactory.service
-sudo systemctl daemon-reload > /dev/null 2>&1
-
+sudo systemctl daemon-reload
 # Start service
-sudo systemctl start artifactory > /dev/null 2>&1
+sudo systemctl start artifactory
 
 # Check status
 sudo systemctl is-active --quiet artifactory
