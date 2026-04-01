@@ -43,7 +43,7 @@ sudo rm -rf jfrog-artifactory-oss-7.77.3-linux.tar.gz > /dev/null 2>&1
 sudo chown -R artifactory:artifactory /opt/artifactory > /dev/null 2>&1
 
 # Copy service file
-sudo cp $(path)/artifactory.service /etc/systemd/system/artifactory.service
+sudo cp $path/artifactory.service /etc/systemd/system/artifactory.service
 sudo systemctl daemon-reload > /dev/null 2>&1
 
 # Start service
