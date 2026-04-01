@@ -23,7 +23,7 @@ else
     exit 1
 fi
 
-echo "            -> Done"
+
 
 # Create user
 sudo useradd -r -m -U -d /opt/artifactory -s /bin/false artifactory 2>/dev/null
