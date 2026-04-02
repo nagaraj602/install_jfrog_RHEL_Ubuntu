@@ -11,7 +11,7 @@ distro=$(cat /etc/os-release | grep "^ID=" | cut -d "=" -f2 | sed 's/"//g')
 echo
 echo
 echo
-echo "Installing JFrog/Artifactory on $distro"
+echo "Installing JFrog/Artifactory $VERSION on $distro"
 
 if [ "$distro" == "rhel" ]; then
 
