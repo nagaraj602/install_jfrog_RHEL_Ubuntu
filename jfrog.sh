@@ -53,5 +53,5 @@ sudo systemctl enable artifactory
 sudo systemctl start artifactory > /dev/null 2>&1
 
 echo "JFrog/Artifactory installed the $distro successfully."
-echo "You can access with the URL: http://$(curl -s ifconfig.me):8082\n"
+echo "You can access with the URL: http://$(curl -s ifconfig.me):8082"
 echo -e "\n\n\nYou can check the port here: /opt/jfrog/artifactory/var/etc/system.yaml  --> externalPort: 8082"
