@@ -28,11 +28,11 @@ sudo systemctl start artifactory 1>/dev/null
 
 # Check if Artifactory is working
 sudo systemctl is-active --quiet artifactory
-echo "\n################################################################ \n"
+echo -e "\n################################################################ \n"
 if [ $? -eq 0 ]; then
 	echo "Artifactory installed Successfully"
 	echo "Access Artifactory using $(curl -s ifconfig.me):8081"
 else
 	echo "Artifactory installation failed"
 fi
-echo "\n################################################################ \n"
+echo -e "\n################################################################ \n"
