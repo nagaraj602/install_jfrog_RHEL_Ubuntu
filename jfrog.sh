@@ -13,13 +13,13 @@ if [ "$distro" == "rhel" ]; then
     sudo yum update -y > /dev/null 2>&1
     sudo yum upgrade -y > /dev/null 2>&1
     sudo yum install wget -y > /dev/null 2>&1
-    sudo dnf install java-25-openjdk-devel -y > /dev/null 2>&1
+    sudo dnf install java-21-openjdk-devel -y > /dev/null 2>&1
 
 elif [ "$distro" == "ubuntu" ]; then
 
     sudo apt-get update -y > /dev/null 2>&1
     sudo apt-get upgrade -y > /dev/null 2>&1
-    sudo apt-get install openjdk-25-jdk -y > /dev/null 2>&1
+    sudo apt-get install openjdk-21-jdk -y > /dev/null 2>&1
 
 else
     echo "Unsupported Distribution - Only RHEL and Ubuntu supported!"
