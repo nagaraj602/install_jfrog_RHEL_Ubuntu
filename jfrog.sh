@@ -1,17 +1,12 @@
 #!/bin/bash
 
-# Specify the latest version of JFrog/Artifactory below. You can get the direct link here: https://jfrog.com/community/download-artifactory-oss/
-VERSION=7.133.17
 
-path=$(pwd)
-
-# Identifying the distro of the server.
-distro=$(cat /etc/os-release | grep "^ID=" | cut -d "=" -f2 | sed 's/"//g')
+distro=$(grep "^ID=" /etc/os-release | cut -d "=" -f2 | tr -d '"')
 
 echo
+echo "Installing JFrog Artifactory on $distro..."
 echo
-echo
-echo "Installing JFrog/Artifactory $VERSION on $distro"
+
 
 if [ "$distro" == "rhel" ]; then
 
@@ -27,31 +22,67 @@ elif [ "$distro" == "ubuntu" ]; then
     sudo apt-get install openjdk-25-jdk -y > /dev/null 2>&1
 
 else
-    echo "Unsupported Distribution - Only RHEL and Ubuntu are supported by this Script!!!!"
+    echo "Unsupported Distribution - Only RHEL and Ubuntu supported!"
     exit 1
 fi
 
+# ==============================
+# Detect JAVA_HOME
+# ==============================
+JAVA_HOME_PATH=$(dirname $(dirname $(readlink -f $(which javac))))
 
-wget https://releases.jfrog.io/artifactory/bintray-artifactory/org/artifactory/oss/jfrog-artifactory-oss/$VERSION/jfrog-artifactory-oss-$VERSION-linux.tar.gz > /dev/null 2>&1
 
-sudo mkdir -p /opt/jfrog
-sudo tar -xzf jfrog-artifactory-oss-$VERSION-linux.tar.gz -C /opt/jfrog > /dev/null 2>&1
+# ==============================
+# Install JFrog Artifactory
+# ==============================
+ART_VERSION=7.133.17
 
-cd /opt/jfrog
-sudo mv artifactory-oss-* artifactory
+cd /opt
 
-sudo useradd -r -m -U -d /opt/jfrog/artifactory -s /bin/bash artifactory
+sudo wget -q https://releases.jfrog.io/artifactory/bintray-artifactory/org/artifactory/oss/jfrog-artifactory-oss/$ART_VERSION/jfrog-artifactory-oss-$ART_VERSION-linux.tar.gz
 
-sudo chown -R artifactory:artifactory /opt/jfrog
+sudo tar -xvf jfrog-artifactory-oss-$ART_VERSION-linux.tar.gz > /dev/null
 
-sudo cp $path/artifactory.service /etc/systemd/system/artifactory.service
+# Create dedicated user
+sudo useradd -r -m -U -d /opt/artifactory -s /bin/false artifactory || true
+
+# Move to standard path
+sudo mv artifactory-oss-$ART_VERSION /opt/artifactory
+
+# Set ownership
+sudo chown -R artifactory:artifactory /opt/artifactory
+
+
+sudo tee /etc/systemd/system/artifactory.service > /dev/null <<EOF
+[Unit]
+Description=JFrog Artifactory
+After=network.target
+
+[Service]
+Type=forking
+User=artifactory
+ExecStart=/opt/artifactory/app/bin/artifactory.sh start
+ExecStop=/opt/artifactory/app/bin/artifactory.sh stop
+Restart=always
+LimitNOFILE=65536
+Environment=JAVA_HOME=$JAVA_HOME_PATH
+
+[Install]
+WantedBy=multi-user.target
+EOF
 
 sudo systemctl daemon-reexec
 sudo systemctl daemon-reload
-
 sudo systemctl enable artifactory
-sudo systemctl start artifactory > /dev/null 2>&1
+sudo systemctl start artifactory
 
-echo "JFrog/Artifactory installed the $distro successfully."
-echo "You can access with the URL: http://$(curl -s ifconfig.me):8082"
-echo -e "\n\n\nYou can check the port here: /opt/jfrog/artifactory/var/etc/system.yaml  --> externalPort: 8082"
+
+echo
+echo "Artifactory Status:"
+systemctl status artifactory --no-pager
+
+echo
+echo "Access URL: http://<your-server-ip>:8081"
+echo "Default login: admin / password"
+echo
+echo "Done."
