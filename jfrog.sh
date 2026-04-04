@@ -48,7 +48,7 @@ sudo mkdir -p /opt/artifactory
 sudo tar -xzf jfrog-artifactory-oss-$ART_VERSION-linux.tar.gz -C /opt/artifactory --strip-components=1 > /dev/null 2>&1
 
 # Create user
-sudo useradd -r -m -U -d /opt/artifactory -s /bin/false artifactory || true > /dev/null 2>&1
+id artifactory &>/dev/null || sudo useradd -r -m -U -d /opt/artifactory -s /bin/false artifactory
 
 # Set ownership & permission
 sudo chown -R artifactory:artifactory /opt/artifactory
