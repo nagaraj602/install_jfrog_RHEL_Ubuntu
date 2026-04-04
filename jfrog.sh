@@ -85,6 +85,7 @@ sudo systemctl start artifactory
 
 echo
 echo "Access URL: http://$(curl -s ifconfig.me):8081"
-echo "Default login: admin / password"
+echo "User: admin"
+echo "Password: password"
 echo
 echo "Done."
