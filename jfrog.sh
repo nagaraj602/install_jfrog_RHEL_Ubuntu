@@ -1,12 +1,10 @@
 #!/bin/bash
 
-
-distro=$(grep "^ID=" /etc/os-release | cut -d "=" -f2 | tr -d '"')
+distro=$(cat /etc/os-release | grep "^ID=" | cut -d "=" -f2 | sed 's/"//g')
 
 echo
 echo "Installing JFrog Artifactory on $distro..."
 echo
-
 
 if [ "$distro" == "rhel" ]; then
 
@@ -31,9 +29,8 @@ fi
 # ==============================
 JAVA_HOME_PATH=$(dirname $(dirname $(readlink -f $(which javac))))
 
-
 # ==============================
-# Install JFrog Artifactory: https://jfrog.com/community/download-artifactory-oss/
+# Install JFrog Artifactory (FIXED)
 # ==============================
 ART_VERSION=7.133.17
 
@@ -41,18 +38,25 @@ cd /opt
 
 sudo wget -q https://releases.jfrog.io/artifactory/bintray-artifactory/org/artifactory/oss/jfrog-artifactory-oss/$ART_VERSION/jfrog-artifactory-oss-$ART_VERSION-linux.tar.gz
 
-sudo tar -xvf jfrog-artifactory-oss-$ART_VERSION-linux.tar.gz > /dev/null
+# Clean old install
+sudo rm -rf /opt/artifactory
 
-# Create dedicated user
+# Create directory
+sudo mkdir -p /opt/artifactory
+
+# Extract properly (no nested folder issue)
+sudo tar -xzf jfrog-artifactory-oss-$ART_VERSION-linux.tar.gz -C /opt/artifactory --strip-components=1
+
+# Create user
 sudo useradd -r -m -U -d /opt/artifactory -s /bin/false artifactory || true
 
-# Move to standard path
-sudo mv artifactory-oss-$ART_VERSION /opt/artifactory
-
-# Set ownership
+# Set ownership & permission
 sudo chown -R artifactory:artifactory /opt/artifactory
+sudo chmod +x /opt/artifactory/app/bin/artifactory.sh
 
-
+# ==============================
+# Create systemd service
+# ==============================
 sudo tee /etc/systemd/system/artifactory.service > /dev/null <<EOF
 [Unit]
 Description=JFrog Artifactory
@@ -71,18 +75,16 @@ Environment=JAVA_HOME=$JAVA_HOME_PATH
 WantedBy=multi-user.target
 EOF
 
+# ==============================
+# Start service
+# ==============================
 sudo systemctl daemon-reexec
 sudo systemctl daemon-reload
 sudo systemctl enable artifactory
 sudo systemctl start artifactory
 
-
 echo
-echo "Artifactory Status:"
-systemctl status artifactory --no-pager
-
-echo
-echo "Access URL: http://<your-server-ip>:8081"
+echo "Access URL: http://$(curl -s ifconfig.me):8081"
 echo "Default login: admin / password"
 echo
 echo "Done."
