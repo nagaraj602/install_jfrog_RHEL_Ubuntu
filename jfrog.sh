@@ -36,7 +36,7 @@ ART_VERSION=7.133.17
 
 cd /opt
 
-sudo wget -q https://releases.jfrog.io/artifactory/bintray-artifactory/org/artifactory/oss/jfrog-artifactory-oss/$ART_VERSION/jfrog-artifactory-oss-$ART_VERSION-linux.tar.gz
+sudo wget -q https://releases.jfrog.io/artifactory/bintray-artifactory/org/artifactory/oss/jfrog-artifactory-oss/$ART_VERSION/jfrog-artifactory-oss-$ART_VERSION-linux.tar.gz > /dev/null 2>&1
 
 # Clean old install
 sudo rm -rf /opt/artifactory
@@ -45,10 +45,10 @@ sudo rm -rf /opt/artifactory
 sudo mkdir -p /opt/artifactory
 
 # Extract properly (no nested folder issue)
-sudo tar -xzf jfrog-artifactory-oss-$ART_VERSION-linux.tar.gz -C /opt/artifactory --strip-components=1
+sudo tar -xzf jfrog-artifactory-oss-$ART_VERSION-linux.tar.gz -C /opt/artifactory --strip-components=1 > /dev/null 2>&1
 
 # Create user
-sudo useradd -r -m -U -d /opt/artifactory -s /bin/false artifactory || true
+sudo useradd -r -m -U -d /opt/artifactory -s /bin/false artifactory || true > /dev/null 2>&1
 
 # Set ownership & permission
 sudo chown -R artifactory:artifactory /opt/artifactory
