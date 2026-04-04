@@ -111,6 +111,10 @@ sudo systemctl start artifactory
 # ==============================
 # Status
 # ==============================
+echo
+echo "Artifactory Status:"
+systemctl status artifactory --no-pager
+
 
 echo
 echo "Access URL: http://$(curl -s ifconfig.me):8081"
