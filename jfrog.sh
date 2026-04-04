@@ -33,7 +33,7 @@ JAVA_HOME_PATH=$(dirname $(dirname $(readlink -f $(which javac))))
 
 
 # ==============================
-# Install JFrog Artifactory
+# Install JFrog Artifactory: https://jfrog.com/community/download-artifactory-oss/
 # ==============================
 ART_VERSION=7.133.17
 
