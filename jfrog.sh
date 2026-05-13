@@ -17,6 +17,7 @@ if [ "$distro" == "rhel" ] || [ "$distro" == "amzn" ]; then
     sudo yum upgrade -y > /dev/null 2>&1
     sudo yum install wget -y > /dev/null 2>&1
     sudo dnf install java-21-openjdk-devel -y > /dev/null 2>&1
+    sudo yum install java-21-amazon-corretto -y > /dev/null 2>&1
 
 elif [ "$distro" == "ubuntu" ]; then
 
